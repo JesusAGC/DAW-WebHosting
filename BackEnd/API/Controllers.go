@@ -30,8 +30,29 @@ func MyRoutes() *mux.Router {
 	router.HandleFunc("/loginT", TestSession).Methods("GET")
 	router.HandleFunc("/logout", Logout).Methods("GET")
 	// router.HandleFunc("/secret", secret).Methods("GET")
+	router.HandleFunc("/tick", GetAllTickets).Methods("GET")
 
 	return router
+}
+
+func GetAllTickets(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	// Allowing CORS to any server requests.
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	// Specifying HTTP methods allowed.
+	w.Header().Set("Access-Control-Allow-Methods", "GET")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	session, _ := store.Get(r, "session")
+	_, ok := session.Values["username"]
+	if !ok {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+	}
+	if !IsAdmin(r, session) {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+
+	}
 }
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
@@ -95,27 +116,24 @@ func GetUserByID(w http.ResponseWriter, r *http.Request) {
 
 func GetAllInternSuggestions(w http.ResponseWriter, r *http.Request) {
 
-	session, _ := store.Get(r, "session")
-	_, ok := session.Values["username"]
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Se necesita estar loggeado")
-		http.Redirect(w, r, "/login", http.StatusFound)
-		return
-	}
-	if !IsAdmin(r, session) {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Se necesita ser Admin")
-		return
-
-	}
-
 	w.Header().Set("Content-Type", "application/json")
 	// Allowing CORS to any server requests.
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// Specifying HTTP methods allowed.
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	session, _ := store.Get(r, "session")
+	_, ok := session.Values["username"]
+	if !ok {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+	}
+	if !IsAdmin(r, session) {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+
+	}
 
 	suggs, err := database.GetAllInSuggestions()
 	if err != nil {
@@ -128,27 +146,24 @@ func GetAllInternSuggestions(w http.ResponseWriter, r *http.Request) {
 
 func GetAllExternSuggestions(w http.ResponseWriter, r *http.Request) {
 
-	session, _ := store.Get(r, "session")
-	_, ok := session.Values["username"]
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Se necesita estar loggeado")
-		http.Redirect(w, r, "/login", http.StatusFound)
-		return
-	}
-	if !IsAdmin(r, session) {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Se necesita ser Admin")
-		return
-
-	}
-
 	w.Header().Set("Content-Type", "application/json")
 	// Allowing CORS to any server requests.
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// Specifying HTTP methods allowed.
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	session, _ := store.Get(r, "session")
+	_, ok := session.Values["username"]
+	if !ok {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+	}
+	if !IsAdmin(r, session) {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+
+	}
 
 	suggs, err := database.GetAllExSuggestions()
 	if err != nil {
@@ -160,27 +175,24 @@ func GetAllExternSuggestions(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllContracts(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "session")
-	_, ok := session.Values["username"]
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Se necesita estar loggeado")
-		http.Redirect(w, r, "/login", http.StatusFound)
-		return
-	}
-	if !IsAdmin(r, session) {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Se necesita ser Admin")
-		return
-
-	}
-
 	w.Header().Set("Content-Type", "application/json")
 	// Allowing CORS to any server requests.
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// Specifying HTTP methods allowed.
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	session, _ := store.Get(r, "session")
+	_, ok := session.Values["username"]
+	if !ok {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+	}
+	if !IsAdmin(r, session) {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+
+	}
 
 	contrs, err := database.GetAllContractsFromDB()
 	if err != nil {
@@ -193,21 +205,24 @@ func GetAllContracts(w http.ResponseWriter, r *http.Request) {
 
 func RegisterContract(w http.ResponseWriter, r *http.Request) {
 
-	session, _ := store.Get(r, "session")
-	_, ok := session.Values["username"]
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Se necesita estar loggeado")
-		http.Redirect(w, r, "/login", http.StatusFound)
-		return
-	}
-
 	w.Header().Set("Content-Type", "application/json")
 	// Allowing CORS to any server requests.
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// Specifying HTTP methods allowed.
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	session, _ := store.Get(r, "session")
+	_, ok := session.Values["username"]
+	if !ok {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+	}
+	if !IsAdmin(r, session) {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+
+	}
 
 	requestBody, _ := ioutil.ReadAll(r.Body)
 	var Ctr models.Contract
@@ -229,20 +244,6 @@ func RegisterContract(w http.ResponseWriter, r *http.Request) {
 }
 
 func RemoveContract(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "session")
-	_, ok := session.Values["username"]
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Se necesita estar loggeado")
-		http.Redirect(w, r, "/login", http.StatusFound)
-		return
-	}
-	if !IsAdmin(r, session) {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Se necesita ser Admin")
-		return
-
-	}
 
 	w.Header().Set("Content-Type", "application/json")
 	// Allowing CORS to any server requests.
@@ -250,6 +251,18 @@ func RemoveContract(w http.ResponseWriter, r *http.Request) {
 	// Specifying HTTP methods allowed.
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	session, _ := store.Get(r, "session")
+	_, ok := session.Values["username"]
+	if !ok {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+	}
+	if !IsAdmin(r, session) {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+
+	}
 
 	ID := mux.Vars(r)["id"]
 
@@ -266,27 +279,24 @@ func RemoveContract(w http.ResponseWriter, r *http.Request) {
 
 func GetContractByID(w http.ResponseWriter, r *http.Request) {
 
-	session, _ := store.Get(r, "session")
-	_, ok := session.Values["username"]
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Se necesita estar loggeado")
-		http.Redirect(w, r, "/login", http.StatusFound)
-		return
-	}
-	if !IsAdmin(r, session) {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Se necesita ser Admin")
-		return
-
-	}
-
 	w.Header().Set("Content-Type", "application/json")
 	// Allowing CORS to any server requests.
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// Specifying HTTP methods allowed.
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	session, _ := store.Get(r, "session")
+	_, ok := session.Values["username"]
+	if !ok {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+	}
+	if !IsAdmin(r, session) {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+
+	}
 
 	ID := mux.Vars(r)["id"]
 
@@ -307,27 +317,24 @@ func GetContractByID(w http.ResponseWriter, r *http.Request) {
 
 func EditContract(w http.ResponseWriter, r *http.Request) {
 
-	session, _ := store.Get(r, "session")
-	_, ok := session.Values["username"]
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Se necesita estar loggeado")
-		http.Redirect(w, r, "/login", http.StatusFound)
-		return
-	}
-	if !IsAdmin(r, session) {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Se necesita ser Admin")
-		return
-
-	}
-
 	w.Header().Set("Content-Type", "application/json")
 	// Allowing CORS to any server requests.
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// Specifying HTTP methods allowed.
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	session, _ := store.Get(r, "session")
+	_, ok := session.Values["username"]
+	if !ok {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+	}
+	if !IsAdmin(r, session) {
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusFound)
+		return
+
+	}
 
 	requestBody, _ := ioutil.ReadAll(r.Body)
 	var Ctr models.Contract

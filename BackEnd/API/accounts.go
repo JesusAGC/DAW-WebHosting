@@ -105,7 +105,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println("logged out")
-	//http.Redirect(w, r, "http://localhost:1000/compania", http.StatusFound)
+	http.Redirect(w, r, "http://localhost:3000/compania", http.StatusFound)
 }
 
 func IsAdmin(r *http.Request, session *sessions.Session) bool {
